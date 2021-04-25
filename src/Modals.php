@@ -1,8 +1,8 @@
 <?php
 
-namespace Vukasinl\Modal\Tests;
+namespace Vukasinl\Modals\Tests;
 
-class Modal
+class Modals
 {
     // Build your next great package.
 }

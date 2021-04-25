@@ -1,10 +1,13 @@
 <?php
 
-namespace Vukasinl\Modal;
+namespace Vukasinl\Modals;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Compilers\BladeCompiler;
+use Illuminate\View\Component as IlluminateComponent;
 
-class ModalServiceProvider extends ServiceProvider
+class ModalsServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -19,10 +22,14 @@ class ModalServiceProvider extends ServiceProvider
         // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
         // $this->loadRoutesFrom(__DIR__.'/routes.php');
 
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('modals.php'),
-            ], 'config');
+        $this->publishes([__DIR__ . '/../config/modals.php' => config_path('modals.php')], 'modals-config');
+        $this->publishes([__DIR__ . '/../resources/views' => resource_path('views/vendor/modals')], 'modals-views');
+        $this->publishes([__DIR__ . '/../resources/css/modals.css' => resource_path('css/modals.css')], 'modals-css');
+
+        $this->bootViews();
+        $this->prefixComponents();
+
+        // if ($this->app->runningInConsole()) {
 
             // Publishing the views.
             /*$this->publishes([
@@ -41,7 +48,7 @@ class ModalServiceProvider extends ServiceProvider
 
             // Registering package commands.
             // $this->commands([]);
-        }
+        // }
     }
 
     /**
@@ -51,10 +58,22 @@ class ModalServiceProvider extends ServiceProvider
     {
         // Automatically apply the package configuration
         $this->mergeConfigFrom(__DIR__.'/../config/modals.php', 'modals');
+    }
 
-        // Register the main class to use with the facade
-        $this->app->singleton('laravel-blade-modals', function () {
-            return new Modal;
+    protected function bootViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'modals');
+        // Blade::component('modal::components.modal', 'modal');
+    }
+
+    private function prefixComponents(): void
+    {
+        $this->callAfterResolving(BladeCompiler::class, function (BladeCompiler $blade) {
+            $prefix = 'modal';
+            /** @var IlluminateComponent $component */
+            foreach (config('modals.components', []) as $alias => $component) {
+                $blade->component($component, $alias, $prefix);
+            }
         });
     }
 }

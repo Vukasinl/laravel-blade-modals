@@ -1,13 +1,13 @@
 <?php
 
-namespace Vukasinl\LaravelBladeModals;
+namespace Vukasinl\Modals;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Vukasinl\LaravelBladeModals\Skeleton\SkeletonClass
+ * @see \Vukasinl\Modals\Skeleton\SkeletonClass
  */
-class ModalFacade extends Facade
+class ModalsFacade extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -16,6 +16,6 @@ class ModalFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'modal';
+        return 'modals';
     }
 }
