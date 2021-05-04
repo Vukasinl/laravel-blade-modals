@@ -25,12 +25,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Vukasinl\\Modal\\": "src"
+            "Vukasinl\\Modals\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Vukasinl\\Modal\\Tests\\": "tests"
+            "Vukasinl\\Modals\\Tests\\": "tests"
         }
     },
     "scripts": {
@@ -44,10 +44,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Vukasinl\\Modal\\ModalServiceProvider"
+                "Vukasinl\\Modals\\ModalsServiceProvider"
             ],
             "aliases": {
-                "Modal": "Vukasinl\\Modal\\ModalFacade"
+                "Modals": "Vukasinl\\Modals\\ModalsFacade"
             }
         }
     }
