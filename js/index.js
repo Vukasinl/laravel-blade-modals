@@ -16,26 +16,10 @@ function initializeModals() {
             }
         );
 
-        // Register open events
-        if (document.querySelector('.js-open-' + modal.id)) {
-            document.querySelectorAll('.js-open-' + modal.id).forEach((el) => {
-                el.addEventListener('click', modal.openListener);
-            })
-        }
+        modal.registerListeners();
 
-        if (modal.isClosable) {
-            // Register close events
-            el.querySelectorAll('.js-close-modal').forEach((el) => {
-                el.addEventListener('click', modal.closeListener);
-            });
-
-            // Register click away close events
-            document.querySelector('html').addEventListener('click', modal.clickAwayListener);
-            el.querySelector('.modal-default').addEventListener('click', modal.innerClickListener);
-        }
-
-        if (modal.isAsync) {
-            modal.form.addEventListener('submit', modal.submitListener);
+        if (el.getAttribute('data-start-opened')) {
+            modal.open();
         }
 
         window.modals.push(modal);

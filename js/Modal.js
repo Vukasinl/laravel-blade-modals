@@ -13,8 +13,11 @@ export default class Modal {
     }
 
     setUrl(value) {
+        if (!value) {
+            return;
+        }
         this.url = value;
-        $(this.el).find('.modal__form').attr('action', value);
+        this.el.querySelector('.modal__form').setAttribute('action', value);
     }
 
     setMessage(value) {
@@ -23,26 +26,31 @@ export default class Modal {
 
     open() {
         if (!this.opened) {
-            $('body').addClass('modal-is-opened');
-            $(this.el).addClass('overlay');
-            $(this.el).find('.modal-default').removeClass("modal--hidden");
-            $(this.el).find('.js-modal').addClass("modal__pop--index");
+            document.querySelector('body').classList.add('modal-is-opened');
+            this.el.classList.add('overlay');
+            this.el.querySelector('.modal-default').classList.remove("modal--hidden");
+            this.el.querySelector('.js-modal').classList.add("modal__pop--index");
             if (this.message) {
-                $('.modal__form-text').text(this.message);
+                this.el.querySelector('.modal__form-text').innerHTML = this.message;
             }
             this.opened = true;
             this.shouldRemoveClasses = false;
+
+            let openedEvent = new CustomEvent(this.id + '-opened', { detail: event });
+            window.dispatchEvent(openedEvent);
         }
     }
 
     close() {
-        $('body').removeClass('modal-is-opened');
-        $(this.el).removeClass('overlay');
-        $(this.el).find('.modal-default').addClass("modal--hidden");
-        $(this.el).find('.js-modal').removeClass("modal__pop--index");
+        document.querySelector('body').classList.remove('modal-is-opened');
+        this.el.classList.remove('overlay');
+        this.el.querySelector('.modal-default').classList.add("modal--hidden");
+        this.el.querySelector('.js-modal').classList.remove("modal__pop--index");
         this.opened = false;
         this.message = '';
 
+        let closedEvent = new CustomEvent(this.id + '-closed');
+        window.dispatchEvent(closedEvent);
     }
 
     openListener(event) {
@@ -52,13 +60,23 @@ export default class Modal {
         this.setMessage(event.currentTarget.getAttribute("data-message"));
 
         this.open();
-
-        let openedEvent = new CustomEvent(this.id + '-opened', { detail: event });
-        window.dispatchEvent(openedEvent);
     }
 
     closeListener(event) {
         this.close();
+    }
+     
+    escapeCloseListener = (event) => {
+        event = event || window.event;
+        var isEscape = false;
+        if ("key" in event) {
+            isEscape = (event.key === "Escape" || event.key === "Esc");
+        } else {
+            isEscape = (event.keyCode === 27);
+        }
+        if (isEscape) {
+            this.close();
+        }
     }
 
     clickAwayListener(event) {
@@ -94,6 +112,37 @@ export default class Modal {
                 //
             });
     }
+     
+    registerListeners() {
+        // Register open events
+        if(document.querySelector('.js-open-' + this.id)) {
+            document.querySelectorAll('.js-open-' + this.id).forEach((el) => {
+                el.addEventListener('click', this.openListener);
+            })
+        }
+
+        if(this.isClosable) {
+            // Register close events
+            this.el.querySelectorAll('.js-close-modal').forEach((el) => {
+                el.addEventListener('click', this.closeListener);
+            });
+
+            // Register click away close events
+            document.querySelector('html').addEventListener('click', this.clickAwayListener);
+            this.el.querySelector('.modal-default').addEventListener('click', this.innerClickListener);
+
+            // Register close on escape events
+            document.addEventListener('keydown', this.escapeCloseListener);
+        }else{
+            this.el.querySelectorAll('.js-close-modal').forEach((el) => {
+                el.style.display = "none";
+            });
+        }
+
+        if(this.isAsync){
+            this.form.addEventListener('submit', this.submitListener);
+        }
+    };
 
     removeListeners() {
         if (document.querySelector('.js-open-' + this.id)) {
@@ -109,6 +158,8 @@ export default class Modal {
 
             document.querySelector('html').removeEventListener('click', this.clickAwayListener);
             this.el.querySelector('.modal-default').removeEventListener('click', this.innerClickListener);
+
+            document.removeEventListener('keydown', this.escapeCloseListener);
         }
 
         if (this.isAsync) {

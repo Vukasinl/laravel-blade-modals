@@ -73,8 +73,9 @@ class ModalsServiceProvider extends ServiceProvider
 
     protected function registerRoutes()
     {
-        RouteFacade::get('/modals/modals.js', [ModalAssetsController::class, 'source']);
-        // RouteFacade::get('/modals/modals.js.map', [LivewireJavaScriptAssets::class, 'maps']);
+        RouteFacade::get('/modals/modals.js', [ModalAssetsController::class, 'script']);
+        RouteFacade::get('/modals/modals.js.map', [ModalAssetsController::class, 'maps']);
+        RouteFacade::get('/modals/modals.css', [ModalAssetsController::class, 'style']);
     }
 
     private function prefixComponents(): void
@@ -134,19 +135,19 @@ class ModalsServiceProvider extends ServiceProvider
     {
         $appUrl = config('modals.asset_url');
 
-        // $manifest = json_decode(file_get_contents(__DIR__ . '/../dist/manifest.json'), true);
-        // $versionedFileName = $manifest['/livewire.js'];
+        $manifest = json_decode(file_get_contents(__DIR__ . '/../dist/manifest.json'), true);
+        $versionedFileName = $manifest['/modals.css'];
 
         // Default to dynamic `livewire.js` (served by a Laravel route).
-        $fullAssetPath = "{$appUrl}/modals";
+        $fullAssetPath = "{$appUrl}/modals{$versionedFileName}";
 
         // Use static assets if they have been published
-        if (file_exists(public_path('vendor/modals/modals.css'))) {
+        // if (file_exists(public_path('vendor/modals/modals.css'))) {
             // $publishedManifest = json_decode(file_get_contents(public_path('vendor/livewire/manifest.json')), true);
             // $versionedFileName = $publishedManifest['/livewire.js'];
 
-            $fullAssetPath = $appUrl . '/vendor/modals/modals.css';
-        }
+            // $fullAssetPath = $appUrl . '/vendor/modals/modals.css';
+        // }
 
         // Adding semicolons for this JavaScript is important,
         // because it will be minified in production.
@@ -159,13 +160,13 @@ HTML;
     {
         $appUrl = config('modals.asset_url') ?: rtrim($options['asset_url'] ?? '', '/');
 
-        $manifest = json_decode(file_get_contents(__DIR__ . '/../dist/js/manifest.json'), true);
+        $manifest = json_decode(file_get_contents(__DIR__ . '/../dist/manifest.json'), true);
         $versionedFileName = $manifest['/modals.js'];
 
         // Default to dynamic `livewire.js` (served by a Laravel route).
         // $fullAssetPath = "{$appUrl}/modals/modals.js";
         $fullAssetPath = "{$appUrl}/modals{$versionedFileName}";
-        
+
         // Use static assets if they have been published
         // if (file_exists(public_path('vendor/modals/modals.js'))) {
             // $publishedManifest = json_decode(file_get_contents(public_path('vendor/livewire/manifest.json')), true);
@@ -180,5 +181,5 @@ HTML;
 <script src="{$fullAssetPath}"></script>
 HTML;
     }
-    
+
 }
