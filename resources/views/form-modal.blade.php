@@ -1,6 +1,6 @@
 <div id="overlay" data-modal="{{ $modalId }}" data-async="{{ $async }}" data-url="{{ $url }}"
     data-closable="{{ $isClosable }}" data-start-opened="{{ $startOpened }}">
-    <div class="relative">
+    <div class="modal__outer">
         <!-- begin modal -->
         <div class="modal__pop js-modal">
 
@@ -10,7 +10,7 @@
                 <!-- begin modal header -->
                 <div class="modal__header">
 
-                    {{ $heading }}
+                    {{-- {{ $heading }} --}}
 
                     <small class="close-modal js-close-modal"><span class="close-modal__close">x</span></small>
                 </div>

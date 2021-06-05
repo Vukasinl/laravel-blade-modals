@@ -1,6 +1,8 @@
 import './polyfills/index';
 import Modal from './Modal';
 
+import '../css/modals.scss';
+
 window.modals = [];
 
 initializeModals();

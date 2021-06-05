@@ -16,7 +16,7 @@ class ModalAssetsController
 
     public function style()
     {
-        return $this->pretendResponseIsFile(__DIR__ . '/../../dist/css/modals.css');
+        return $this->pretendResponseIsFile(__DIR__ . '/../../dist/css/modals.css', 'text/css');
     }
 
 

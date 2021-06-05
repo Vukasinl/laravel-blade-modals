@@ -1,4 +1,15 @@
 export default class Modal {
+    id;
+    el;
+    form;
+    submitBtn;
+    isAsync;
+    isClosable;
+    opened;
+    shouldRemoveClasses;
+    url;
+    message;
+
     constructor(id, options = null) {
         this.id = id;
         this.el = document.querySelector(`[data-modal="${id}"]`);
@@ -53,7 +64,7 @@ export default class Modal {
         window.dispatchEvent(closedEvent);
     }
 
-    openListener(event) {
+    openListener = (event) => {
         event.preventDefault();
 
         this.setUrl(event.currentTarget.getAttribute("data-url"));
@@ -62,7 +73,7 @@ export default class Modal {
         this.open();
     }
 
-    closeListener(event) {
+    closeListener = (event) => {
         this.close();
     }
      
@@ -79,7 +90,7 @@ export default class Modal {
         }
     }
 
-    clickAwayListener(event) {
+    clickAwayListener = (event) => {
         if (this.opened && this.shouldRemoveClasses) {
             this.close();
         }
@@ -87,11 +98,11 @@ export default class Modal {
         this.shouldRemoveClasses = true;
     }
 
-    innerClickListener(event) {
+    innerClickListener = (event) => {
         this.shouldRemoveClasses = false;
     }
 
-    submitListener(event) {
+    submitListener = (event) => {
         event.preventDefault();
 
         let startSubmit = new CustomEvent(this.id + '-submit', { detail: event });
